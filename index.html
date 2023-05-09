@@ -128,4 +128,112 @@ float: right;
 }
 
 </style>
+<script>
+    const chargeLevel = document.getElementById("charge-level");
+  const charge = document.getElementById("charge");
+  const chargingTimeRef = document.getElementById("charging-time");
+  
+  window.onload = () => {
+  //For browsers that don't support the battery status API
+  if (!navigator.getBattery) {
+  alert("Battery Status Api Is Not Supported In Your Browser");
+  return false;
+  }
+  };
+  
+  navigator.getBattery().then((battery) => {
+  function updateAllBatteryInfo() {
+  updateChargingInfo();
+  updateLevelInfo();
+  }
+  updateAllBatteryInfo();
+  
+  //When the charging status changes
+  battery.addEventListener("chargingchange", () => {
+  updateAllBatteryInfo();
+  });
+  
+  //When the Battery Levvel Changes
+  battery.addEventListener("levelchange", () => {
+  updateAllBatteryInfo();
+  });
+  
+  function updateChargingInfo() {
+  if (battery.charging) {
+  charge.classList.add("active");
+  chargingTimeRef.innerText = "";
+  } else {
+  charge.classList.remove("active");
+  
+  //Display time left to discharge only when it is a integer value i.e not infinity
+  if (parseInt(battery.dischargingTime)) {
+    let hr = parseInt(battery.dischargingTime / 3600);
+    let min = parseInt(battery.dischargingTime / 60 - hr * 60);
+    chargingTimeRef.innerText = `${hr}hr ${min}mins remaining`;
+  }
+  }
+  }
+  
+  //Updating battery level
+  function updateLevelInfo() {
+  let batteryLevel = `${parseInt(battery.level * 100)}%`;
+  charge.style.width = batteryLevel;
+  chargeLevel.textContent = batteryLevel;
+  }
+  });
+  </script>
+  
+  <SCRIPT language="JavaScript"> 
+  
+    function Time() {
+    
+     // Creating object of the Date class
+     var date = new Date();
+    
+     // Get current hour
+     var hour = date.getHours();
+     // Get current minute
+     var minute = date.getMinutes();
+     // Get current second
+     var second = date.getSeconds();
+    
+     // Variable to store AM / PM
+     var period = "";
+    
+  
+     // Converting the hour in 12-hour format
+     if (hour == 0) {
+     hour = 12;
+     } else {
+     if (hour > 12) {
+     hour = hour - 12;
+     }
+     }
+    
+     // Updating hour, minute, and second
+     // if they are less than 10
+     hour = update(hour);
+     minute = update(minute);
+     second = update(second);
+    
+     // Adding time elements to the div
+     document.getElementById("digital-clock").innerText = hour + " : " + minute +  period;
+    
+     // Set Timer to 1 sec (1000 ms)
+     setTimeout(Time, 1000);
+    }
+    
+     // Function to update time elements if they are less than 10
+     // Append 0 before time elements if they are less than 10
+    function update(t) {
+     if (t < 10) {
+     return "0" + t;
+     }
+     else {
+     return t;
+     }
+    }
+    
+    Time();
+    </SCRIPT>
 </html>
